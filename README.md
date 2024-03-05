@@ -1,84 +1,38 @@
-# SuperHeroes API
+Endpoints Documentation
 
-This is a simple API built with Deno and Express for managing superheroes data in a MongoDB database.
-
-## Getting Started
-
-To run this API locally, follow these steps:
-
-### Prerequisites
-
-- [Deno](https://deno.land/#installation)
-- MongoDB database
-
-### Installation
-
-1. Clone this repository:
-
-```bash
-git clone <repository-url>
-Install dependencies:
-bash
-Copy code
-deno cache --reload --lock=lock.json --lock-write mod.ts
-Set up environment variables by creating a .env file in the root directory and adding the following:
-bash
-Copy code
-PASS=your_mongodb_password
-USER=your_mongodb_username
-Replace your_mongodb_password and your_mongodb_username with your MongoDB credentials.
-
-Running the API
-bash
-Copy code
-deno run --allow-net --allow-read --allow-env mod.ts
-The API should now be running on port 3000.
-
-Endpoints
-GET /
-Retrieve all superheroes.
-
-Example
-http
-Copy code
-GET http://localhost:3000/
-GET /:name
-Retrieve superheroes by name (case-insensitive).
-
-Example
-http
-Copy code
-GET http://localhost:3000/spider
-POST /
-Create a new superhero.
-
-Request Body
-json
-Copy code
-{
-  "name": "Spider-Man",
-  "image": "https://example.com/spiderman.jpg",
-  "sound": "https://example.com/spiderman_sound.mp3"
-}
-Example
-http
-Copy code
-POST http://localhost:3000/
-Content-Type: application/json
-
-{
-  "name": "Spider-Man",
-  "image": "https://example.com/spiderman.jpg",
-  "sound": "https://example.com/spiderman_sound.mp3"
-}
-Error Handling
-400 Bad Request: If the request body is missing any required fields or if the superhero name is repeated.
-404 Not Found: If the requested resource is not found.
-Dependencies
-Express - Web framework for Node.js
-MongoDB - NoSQL database
-dotenv - Loads environment variables from a .env file
-mongo - MongoDB driver for Deno
-std - Standard library for Deno
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. GET /
+   Description: Retrieves all superheroes stored in the database.
+   Method: GET
+   URL: /
+   Response: An array of superhero objects in JSON format.
+2. GET /:name
+   Description: Retrieves superheroes whose name matches the provided query string.
+   Method: GET
+   URL: /:name
+   Parameters:
+   name: The name of the superhero to search for.
+   Response: An array of superhero objects in JSON format whose name matches the provided query string.
+3. POST /
+   Description: Adds a new superhero to the database.
+   Method: POST
+   URL: /
+   Request Body:
+   name: Name of the superhero (required)
+   image: URL of the superhero's image (required)
+   sound: URL of the superhero's sound (required)
+   creator: Name of the creator of the superhero (required)
+   Response:
+   201 Created if the superhero is successfully added, along with the \_id of the newly added superhero.
+   400 Bad Request if any required field is missing in the request body.
+4. DELETE /:name
+   Description: Deletes a superhero from the database by name and creator.
+   Method: DELETE
+   URL: /:name
+   Parameters:
+   name: The name of the superhero to delete.
+   Request Body:
+   creator: Name of the creator of the superhero (required)
+   Response:
+   204 No Content if the superhero is successfully deleted.
+   400 Bad Request if the creator field is missing in the request body.
+   404 Not Found if the superhero with the specified name and creator is not found in the database.

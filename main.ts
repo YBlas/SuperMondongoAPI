@@ -47,13 +47,20 @@ app.get("/:name", (req: Request, res: Response): void => {
     .find({ name: { $regex: name, $options: "i" } })
     .toArray()
     .then((e) => {
-      res.json(e);
+      res.json(
+        e.map((e) => ({ name: e.name, image: e.image, sound: e.sound }))
+      );
     });
 });
 
 app.post("/", async (req: Request, res: Response) => {
-  const { name, image, sound } = req.body;
-  if (name === undefined || image === undefined || sound === undefined) {
+  const { name, image, sound, creator } = req.body;
+  if (
+    name === undefined ||
+    image === undefined ||
+    sound === undefined ||
+    creator === undefined
+  ) {
     res.status(400).json({ message: "La liaste chavalín, rellenamelo bien" });
     return;
   }
@@ -62,8 +69,23 @@ app.post("/", async (req: Request, res: Response) => {
     res.status(400).json({ message: "Repeated name" });
     return;
   }
-  const { $oid } = await superHeroes.insertOne({ name, image, sound });
+  const { $oid } = await superHeroes.insertOne({ name, image, sound, creator });
   res.status(201).json({ _id: $oid });
+});
+
+app.delete("/:name", async (req: Request, res: Response) => {
+  const name = req.params.name;
+  const creator = req.body.creator;
+  if (creator === undefined) {
+    res.status(400).json({ message: "No creator" });
+    return;
+  }
+  const deleted = await superHeroes.deleteOne({ name, creator });
+  if (deleted === 0) {
+    res.status(404).json({ message: "Not found" });
+    return;
+  }
+  res.status(204).end();
 });
 
 app.listen(3000, () => {
