@@ -37,7 +37,12 @@ app.get("/", (req: Request, res: Response): void => {
     .find({})
     .toArray()
     .then((e) => {
-      res.json(e);
+      const filteredE = e.map((e) => {
+        delete e._id;
+        delete e.creator;
+        return e;
+      });
+      res.json(filteredE);
     });
 });
 
@@ -47,9 +52,12 @@ app.get("/:name", (req: Request, res: Response): void => {
     .find({ name: { $regex: name, $options: "i" } })
     .toArray()
     .then((e) => {
-      res.json(
-        e.map((e) => ({ name: e.name, image: e.image, sound: e.sound }))
-      );
+      const filteredE = e.map((e) => {
+        delete e._id;
+        delete e.creator;
+        return e;
+      });
+      res.json(filteredE);
     });
 });
 
